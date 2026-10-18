@@ -1,0 +1,23 @@
+info:
+  name: CreateBook
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:8080/books
+  body:
+    type: json
+    data: |-
+      {
+        "title": "100 años de soledad",
+        "author": "Gabriel García Márquez"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

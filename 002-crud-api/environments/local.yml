@@ -1,0 +1,4 @@
+name: local
+variables:
+  - name: id
+    value: "2"
