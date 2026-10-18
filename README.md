@@ -59,6 +59,19 @@ curl localhost:8080/books
 curl localhost:8080/health/alive
 ```
 
+## Despliegue en Railway
+
+El `Dockerfile` de la raíz lo usa Railway para construir la imagen.
+
+1. Crea un servicio en Railway desde este repositorio de GitHub.
+2. Agrega un volumen al servicio con punto de montaje `/data`. Sin volumen, los libros se pierden en cada despliegue.
+3. Genera un dominio público desde la configuración de red del servicio.
+
+Variables de entorno:
+
+- `PORT`: la asigna Railway. En local la API usa 8080.
+- `DB_PATH`: ruta de la base. El `Dockerfile` la fija en `/data/books.db`. En local usa `books.db`.
+
 ## go.mod y go.sum
 
 - **`go.mod`** declara el nombre del módulo (`002-crud-api`), la versión de Go y las dependencias con su versión. Las que no usas directamente aparecen marcadas con `// indirect`.

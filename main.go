@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 )
 
 // logger adapta el paquete log estándar a la interfaz service.Logger.
@@ -17,7 +18,7 @@ func (logger) Log(message string) {
 }
 
 func main() {
-	db, err := infrastructure.OpenSQLite("books.db")
+	db, err := infrastructure.OpenSQLite(env("DB_PATH", "books.db"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,6 +33,15 @@ func main() {
 	})
 	controller.NewBookController(svc).RegisterRoutes(mux)
 
-	log.Println("escuchando en http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	port := env("PORT", "8080") // Railway asigna PORT en cada despliegue
+	log.Println("escuchando en el puerto " + port)
+	log.Fatal(http.ListenAndServe(":"+port, mux))
+}
+
+// env devuelve el valor de la variable de entorno key, o fallback si no está definida.
+func env(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
 }
