@@ -13,8 +13,8 @@ func OpenSQLite(path string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	// SQLite admite un solo escritor a la vez; con una sola conexión las peticiones concurrentes no fallan con "database is locked".
-	db.SetMaxOpenConns(1)
+	// SQLite tolera múltiples lectores; los escritores se serializan naturalmente.
+	db.SetMaxOpenConns(25)
 
 	// AUTOINCREMENT evita reutilizar el ID de un libro borrado.
 	// El índice único impide dos libros con el mismo título y autor, aunque lleguen peticiones a la vez.
