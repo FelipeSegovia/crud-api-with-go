@@ -13,8 +13,14 @@ func OpenSQLite(path string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	// SQLite tolera múltiples lectores; los escritores se serializan naturalmente.
-	db.SetMaxOpenConns(25)
+	// SQLite admite un solo escritor a la vez; con una sola conexión las peticiones concurrentes no fallan con "database is locked".
+	db.SetMaxOpenConns(1)
+
+	// NORMAL reduce fsync sin riesgo real de pérdida en desarrollo/prod sin fallas.
+	if _, err := db.Exec("PRAGMA synchronous=NORMAL"); err != nil {
+		db.Close()
+		return nil, err
+	}
 
 	// AUTOINCREMENT evita reutilizar el ID de un libro borrado.
 	// El índice único impide dos libros con el mismo título y autor, aunque lleguen peticiones a la vez.
